@@ -1,0 +1,98 @@
+.railwayButton{
+  display: inline-block;
+  background-color: #0070C0;
+  padding: 5px;
+  border: solid 2px #0070C0;
+  border-radius: 5px;
+  color: white;
+  text-decoration: none;
+  transition: 0.3s;
+}
+.railwayButton:hover{
+  background-color: white;
+  color: #0070C0;
+}
+.roadButton{
+  display: inline-block;
+  background-color: #00994E;
+  padding: 5px;
+  border: solid 2px #00994E;
+  border-radius: 5px;
+  color: white;
+  text-decoration: none;
+  transition: 0.3s;
+}
+.roadButton:hover{
+  background-color: white;
+  color: #00994E;
+}
+.anyButton{
+  display: inline-block;
+  background-color: #FF9900;
+  padding: 5px;
+  border: solid 2px #FF9900;
+  border-radius: 5px;
+  color: white;
+  text-decoration: none;
+  transition: 0.3s;
+}
+.anyButton:hover{
+  background-color: white;
+  color: #FF9900;
+}
+.annexButton{
+  display: inline-block;
+  background-color: #1F2F54;
+  padding: 5px;
+  border: solid 2px #1F2F54;
+  border-radius: 5px;
+  color: white;
+  text-decoration: none;
+  transition: 0.3s;
+}
+.annexButton:hover{
+  background-color: white;
+  color: #1F2F54;
+}
+.timetableButton{
+  display: inline-block;
+  background-color: #666666;
+  padding: 5px;
+  border: solid 2px #666666;
+  border-radius: 5px;
+  color: white;
+  text-decoration: none;
+  transition: 0.3s;
+}
+.timetableButton:hover{
+  background-color: white;
+  color: #666666;
+}
+.pointButton{
+  display: inline-block;
+  background-color: #008080;
+  padding: 5px;
+  border: solid 2px #008080;
+  border-radius: 5px;
+  color: white;
+  text-decoration: none;
+  transition: 0.3s;
+}
+.pointButton:hover{
+  background-color: white;
+  color: #008080;
+}
+.nurieButton{
+  display: inline-block;
+  background-color: #5B9BD5;
+  padding: 5px;
+  border: solid 2px #5B9BD5;
+  border-radius: 5px;
+  color: white;
+  text-decoration: none;
+  transition: 0.3s;
+}
+.nurieButton:hover{
+  background-color: white;
+  color: #5B9BD5;
+}
