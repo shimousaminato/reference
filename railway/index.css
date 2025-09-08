@@ -52,3 +52,7 @@ border-color: red;
 .orB::after{
  height: 5px;
 }
+details{
+ background-color: #DFDFDF;
+ border-radius: 10px;
+}
