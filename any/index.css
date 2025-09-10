@@ -17,7 +17,7 @@ border: 2px #00994E solid;
 background-color: white;
 color: #FF9900;
 }
-.roadButton:active{
+.anyButton:active{
  margin: 0px 0px;
  box-shadow: 0px 0px 0px 0px;
 }
