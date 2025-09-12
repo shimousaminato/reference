@@ -1,0 +1,36 @@
+.annexButton{
+ background-color: #1F2F54;
+ border-radius: 10px;
+ font-size: 20px;
+ color: white;
+ text-decoration: none;
+ font-weight: 900;
+ padding: 3px;
+ box-shadow: 3px 3px 0px 0px #CCCCCC;
+ transition: 0.3s;
+ margin: 0px 0px 0px 0px;
+ display: inline-block;
+border: 2px #00994E solid;
+ width: auto;
+}
+.annexButton:hover{
+background-color: white;
+color: #1F2F54;
+}
+.annexButton:active{
+ margin: 0px 0px;
+ box-shadow: 0px 0px 0px 0px;
+}
+details{
+ background-color: #DFDFDF;
+ border-radius: 10px;
+}
+h2{
+ bottom: 5px;
+ border-bottom: 4px solid #1F2F54;
+}
+h3{
+ padding: 5px;
+ border: 2px solid #1F2F54;
+ background-color: #99B6FF;
+}
