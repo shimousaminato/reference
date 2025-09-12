@@ -1,5 +1,4 @@
 .annexButton{
- background-color: #1F2F54;
  border-radius: 10px;
  font-size: 20px;
  color: white;
@@ -10,7 +9,6 @@
  transition: 0.3s;
  margin: 0px 0px 0px 0px;
  display: inline-block;
-border: 2px #00994E solid;
  width: auto;
 }
 .annexButton:hover{
