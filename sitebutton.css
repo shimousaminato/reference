@@ -1,102 +1,128 @@
-.railwayButton{
-  display: inline-block;
-  background-color: #0070C0;
-  padding: 5px;
-  border: solid 2px #0070C0;
-  border-radius: 5px;
-  color: white;
-  text-decoration: none;
-  transition: 0.3s;
-}
-.railwayButton:hover{
-  background-color: white;
-  color: #0070C0;
-}
-.roadButton{
-  display: inline-block;
-  background-color: #00994E;
-  padding: 5px;
-  border: solid 2px #00994E;
-  border-radius: 5px;
-  color: white;
-  text-decoration: none;
-  transition: 0.3s;
-}
-.roadButton:hover{
-  background-color: white;
-  color: #00994E;
-}
-.anyButton{
-  display: inline-block;
-  background-color: #FF9900;
-  padding: 5px;
-  border: solid 2px #FF9900;
-  border-radius: 5px;
-  color: white;
-  text-decoration: none;
-  transition: 0.3s;
-}
-.anyButton:hover{
-  background-color: white;
-  color: #FF9900;
-}
-.annexButton{
-  display: inline-block;
-  background-color: #1F2F54;
-  padding: 5px;
-  border: solid 2px #1F2F54;
-  border-radius: 5px;
-  color: white;
-  text-decoration: none;
-  transition: 0.3s;
-}
-.annexButton:hover{
-  background-color: white;
-  color: #1F2F54;
-}
-.timetableButton{
-  display: inline-block;
-  background-color: #666666;
-  padding: 5px;
-  border: solid 2px #666666;
-  border-radius: 5px;
-  color: white;
-  text-decoration: none;
-  transition: 0.3s;
-}
-.timetableButton:hover{
-  background-color: white;
-  color: #666666;
-}
-.pointButton{
-  display: inline-block;
-  background-color: #008080;
-  padding: 5px;
-  border: solid 2px #008080;
-  border-radius: 5px;
-  color: white;
-  text-decoration: none;
-  transition: 0.3s;
-}
-.pointButton:hover{
-  background-color: white;
-  color: #008080;
-}
-.nurieButton{
-  display: inline-block;
-  background-color: #5B9BD5;
-  padding: 5px;
-  border: solid 2px #5B9BD5;
-  border-radius: 5px;
-  color: white;
-  text-decoration: none;
-  transition: 0.3s;
-}
-.nurieButton:hover{
-  background-color: white;
-  color: #5B9BD5;
-}
-li{
-  padding-bottom: 3px;
-  padding-top: 3px;
-}
+        body {
+            font-family: 'Segoe UI', 'Helvetica Neue', Arial, 'Hiragino Kaku Gothic ProN', 'Meiryo', sans-serif;
+            color: #333;
+            line-height: 1.6;
+            background-color: #f4f7f9;
+            margin: 0;
+            padding: 40px 20px;
+            text-align: center;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: auto;
+            padding: 30px;
+            background-color: #fff;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            font-size: 2.5em;
+            color: #1a1a1a;
+            margin-bottom: 10px;
+        }
+
+        .description {
+            font-size: 1.1em;
+            color: #666;
+            margin-bottom: 40px;
+        }
+
+        .button-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            justify-content: center;
+        }
+
+        /* --- ボタンの色合いとホバー効果（既存のCSSを統合） --- */
+        .railwayButton,
+        .roadButton,
+        .anyButton,
+        .annexButton,
+        .timetableButton,
+        .pointButton,
+        .nurieButton {
+            display: block;
+            padding: 15px;
+            border: solid 2px;
+            border-radius: 8px;
+            color: white;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 1.1em;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        .railwayButton {
+            background-color: #0070C0;
+            border-color: #0070C0;
+        }
+        .railwayButton:hover {
+            background-color: white;
+            color: #0070C0;
+        }
+
+        .roadButton {
+            background-color: #00994E;
+            border-color: #00994E;
+        }
+        .roadButton:hover {
+            background-color: white;
+            color: #00994E;
+        }
+
+        .anyButton {
+            background-color: #FF9900;
+            border-color: #FF9900;
+        }
+        .anyButton:hover {
+            background-color: white;
+            color: #FF9900;
+        }
+
+        .annexButton {
+            background-color: #1F2F54;
+            border-color: #1F2F54;
+        }
+        .annexButton:hover {
+            background-color: white;
+            color: #1F2F54;
+        }
+
+        .timetableButton {
+            background-color: #666666;
+            border-color: #666666;
+        }
+        .timetableButton:hover {
+            background-color: white;
+            color: #666666;
+        }
+
+        .pointButton {
+            background-color: #008080;
+            border-color: #008080;
+        }
+        .pointButton:hover {
+            background-color: white;
+            color: #008080;
+        }
+
+        .nurieButton {
+            background-color: #5B9BD5;
+            border-color: #5B9BD5;
+        }
+        .nurieButton:hover {
+            background-color: white;
+            color: #5B9BD5;
+        }
+
+        /* --- レスポンシブ対応 --- */
+        @media (max-width: 600px) {
+            .button-grid {
+                grid-template-columns: 1fr;
+            }
+        }
