@@ -96,3 +96,7 @@
   background-color: white;
   color: #5B9BD5;
 }
+li{
+      padding-bottom: 3px;
+      padding-top: 3px;
+    }
