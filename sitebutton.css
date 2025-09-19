@@ -38,11 +38,23 @@
 
         /* --- ボタンの色合いとホバー効果（既存のCSSを統合） --- */
         .railwayButton,
+        .oldrailwayButton,
         .roadButton,
         .anyButton,
+        .chartButton,
+        .pictButton,
+        .memoButton,
         .annexButton,
         .timetableButton,
         .pointButton,
+        .nigaoeButton,
+        .quizButton,
+        .doshuseiButton,
+        .osakatoButton,
+        .tokyotoButton,
+        .ritsuryoButton,
+        .rokutairikuButton,
+        .laboButton
         .nurieButton {
             display: block;
             padding: 15px;
@@ -66,6 +78,15 @@
             color: #0070C0;
         }
 
+        .oldrailwayButton {
+            border-color: #0070C0;
+            color: #0070C0;
+        }
+        .oldrailwayButton:hover {
+            background-color: white;
+            color: #FF0000;
+        }
+
         .roadButton {
             background-color: #00994E;
             border-color: #00994E;
@@ -82,6 +103,33 @@
         .anyButton:hover {
             background-color: white;
             color: #FF9900;
+        }
+
+        .chartButton {
+            background-color: #B41C04;
+            border-color: #B41C04;
+        }
+        .chartButton:hover {
+            background-color: white;
+            color: #B41C04;
+        }
+
+        .pictButton {
+            background-color: #800E80;
+            border-color: #800E80;
+        }
+        .pictButton:hover {
+            background-color: white;
+            color: #800E80;
+        }
+
+        .memoButton {
+            background-color: #113311;
+            border-color: #113311;
+        }
+        .memoButton:hover {
+            background-color: white;
+            color: #113311;
         }
 
         .annexButton {
@@ -109,6 +157,60 @@
         .pointButton:hover {
             background-color: white;
             color: #008080;
+        }
+
+        .nurieButton {
+            background-color: #5B9BD5;
+            border-color: #5B9BD5;
+        }
+        .nurieButton:hover {
+            background-color: white;
+            color: #5B9BD5;
+        }
+
+        .nurieButton {
+            background-color: #5B9BD5;
+            border-color: #5B9BD5;
+        }
+        .nurieButton:hover {
+            background-color: white;
+            color: #5B9BD5;
+        }
+
+        .nurieButton {
+            background-color: #5B9BD5;
+            border-color: #5B9BD5;
+        }
+        .nurieButton:hover {
+            background-color: white;
+            color: #5B9BD5;
+        }
+
+        .nurieButton {
+            background-color: #5B9BD5;
+            border-color: #5B9BD5;
+        }
+        .nurieButton:hover {
+            background-color: white;
+            color: #5B9BD5;
+        }
+
+        .nurieButton {
+            background-color: #5B9BD5;
+            border-color: #5B9BD5;
+        }
+        .nurieButton:hover {
+            background-color: white;
+            color: #5B9BD5;
+        }
+
+        .nurieButton {
+            background-color: #5B9BD5;
+            border-color: #5B9BD5;
+        }
+        .nurieButton:hover {
+            background-color: white;
+            color: #5B9BD5;
         }
 
         .nurieButton {
