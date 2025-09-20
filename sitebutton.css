@@ -240,6 +240,14 @@
             color: #548235;
         }
 
+        .laboButton {
+            background-color: #000000;
+            border-color: #000000;
+        }
+        .laboButton:hover {
+            background-color: white;
+            color: #000000;
+        }
 
 /* --- レスポンシブ対応 --- */
         @media (max-width: 600px) {
