@@ -168,61 +168,80 @@
             color: #5B9BD5;
         }
 
-        .nurieButton {
-            background-color: #5B9BD5;
-            border-color: #5B9BD5;
+        .nigaoeButton {
+            background-color: #6699FF;
+            border-color: #6699FF;
         }
-        .nurieButton:hover {
+        .nigaoeButton:hover {
             background-color: white;
-            color: #5B9BD5;
+            color: #6699FF;
         }
 
-        .nurieButton {
-            background-color: #5B9BD5;
-            border-color: #5B9BD5;
+        .quizButton {
+            background-color: #3949AB;
+            border-color: #3949AB;
         }
-        .nurieButton:hover {
+        .quizButton:hover {
             background-color: white;
-            color: #5B9BD5;
+            color: #3949AB;
         }
 
-        .nurieButton {
-            background-color: #5B9BD5;
-            border-color: #5B9BD5;
+        .doshuseiButton {
+            background-color: #FF6C00;
+            border-color: #FF6C00;
         }
-        .nurieButton:hover {
+        .doshuseiButton:hover {
             background-color: white;
-            color: #5B9BD5;
+            color: #FF6C00;
         }
 
-        .nurieButton {
-            background-color: #5B9BD5;
-            border-color: #5B9BD5;
+        .osakatoButton {
+            background-color: #4969E1;
+            border-color: #4969E1;
         }
-        .nurieButton:hover {
+        .osakatoButton:hover {
             background-color: white;
-            color: #5B9BD5;
+            color: #4969E1;
         }
 
-        .nurieButton {
-            background-color: #5B9BD5;
-            border-color: #5B9BD5;
+        .tokyotoButton {
+            background-color: #FF0000;
+            border-color: #FF0000;
         }
-        .nurieButton:hover {
+        .tokyotoButton:hover {
             background-color: white;
-            color: #5B9BD5;
+            color: #FF0000;
         }
 
-        .nurieButton {
-            background-color: #5B9BD5;
-            border-color: #5B9BD5;
+        .tokyotoButton {
+            background-color: #FF0000;
+            border-color: #FF0000;
         }
-        .nurieButton:hover {
+        .tokyotoButton:hover {
             background-color: white;
-            color: #5B9BD5;
+            color: #FF0000;
         }
 
-        /* --- レスポンシブ対応 --- */
+        .ritsuryoButton {
+            background-color: #843C0C;
+            border-color: #843C0C;
+        }
+        .ritsuryoButton:hover {
+            background-color: white;
+            color: #843C0C;
+        }
+
+        .rokutairikuButton {
+            background-color: #548235;
+            border-color: #548235;
+        }
+        .rokutairikuButton:hover {
+            background-color: white;
+            color: #548235;
+        }
+
+
+/* --- レスポンシブ対応 --- */
         @media (max-width: 600px) {
             .button-grid {
                 grid-template-columns: 1fr;
