@@ -57,8 +57,7 @@
         .laboButton,
         .nurieButton {
             display: block;
-            padding-bottom: 2px;
-            padding-top: 2px;
+            padding: 15px;
             border: solid 2px;
             border-radius: 8px;
             color: white;
@@ -248,6 +247,10 @@
             background-color: white;
             color: #000000;
         }
+        li {
+            padding-bottom: 2px;
+            padding-top: 2px;
+       }
 
 /* --- レスポンシブ対応 --- */
         @media (max-width: 600px) {
