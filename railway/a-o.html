@@ -67,33 +67,50 @@
   <!-- メインコンテンツ -->
   <main>
     <!-- IRいしかわ鉄道 -->
-    <section>
+<section>
   <a id="1_IRIshikawatetsudo"></a>
   <h2>IRいしかわ鉄道</h2>
   <h3>IRいしかわ鉄道線</h3>
-  
-  <div class="card-grid">
-    <details class="item-card">
+
+  <!-- ソート用のコントロールパネル -->
+  <div class="sort-controls">
+    <label for="sort-select">並び替え：</label>
+    <select id="sort-select" class="sort-select">
+      <option value="id-asc">作品番号：低い順（古い順）</option>
+      <option value="score-desc">スコア：高い順</option>
+    </select>
+  </div>
+
+  <!-- カードを格納するグリッド（JSで並び替えます） -->
+  <div class="card-grid" id="card-container">
+    
+    <!-- 作品番号 82865, スコア 95 の例 -->
+    <details class="item-card" data-id="82865" data-score="95">
       <summary><a class="rB" href="https://ku-tetsu.net/82865.html">[!]IRいしかわ鉄道線(雲雀中山)</a></summary>
       <div class="card-detail">
+        <p class="score">スコア: 95</p>
         <p>ここに詳細やメモを書き込めます。</p>
       </div>
     </details>
 
-    <details class="item-card">
+    <!-- 作品番号 118719, スコア 88 の例 -->
+    <details class="item-card" data-id="118719" data-score="88">
       <summary><a class="rB" href="https://ku-tetsu.net/118719.html">[!]IRいしかわ鉄道線(天神川コノカ)</a></summary>
       <div class="card-detail">
+        <p class="score">スコア: 88</p>
         <p>ここに詳細やメモを書き込めます。</p>
       </div>
     </details>
 
-    <details class="item-card">
+    <!-- 作品番号 162860, スコア 102 の例 -->
+    <details class="item-card" data-id="162860" data-score="102">
       <summary><a class="rB" href="https://ku-tetsu.net/162860.html">[!]IRいしかわ鉄道線(特急東海)</a></summary>
       <div class="card-detail">
+        <p class="score">スコア: 102</p>
         <p>ここに詳細やメモを書き込めます。</p>
       </div>
     </details>
-    <!-- ほかの項目も同様に繰り返します -->
+
   </div>
 </section>
     <section>
