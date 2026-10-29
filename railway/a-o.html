@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-<!DOCTYPE html>
 <html lang="ja">
 <head>
   <meta charset="UTF-8">
@@ -10,34 +9,43 @@
   <title>会社別目次 (A-O)</title>
   <script>
     document.addEventListener('DOMContentLoaded', () => {
-  const sortSelect = document.getElementById('sort-select');
-  const container = document.getElementById('card-container');
-
-  if (!sortSelect || !container) return;
-
-  sortSelect.addEventListener('change', (e) => {
-    const value = e.target.value;
-    const cards = Array.from(container.getElementsByClassName('item-card'));
-
-    cards.sort((a, b) => {
-      if (value === 'id-asc') {
-        // 作品番号：低い順（昇順）
-        const idA = parseInt(a.getAttribute('data-id'), 10);
-        const idB = parseInt(b.getAttribute('data-id'), 10);
-        return idA - idB;
-      } else if (value === 'score-desc') {
-        // スコア：高い順（降順）
-        const scoreA = parseFloat(a.getAttribute('data-score')) || 0;
-        const scoreB = parseFloat(b.getAttribute('data-score')) || 0;
-        return scoreB - scoreA; // 高い方が前へ
-      }
-      return 0;
-    });
-
-    // 並び替えた順番通りにDOMを再配置
-    cards.forEach(card => container.appendChild(card));
+  // ページ読み込み時に各カードのリンク（URL）を自動生成する
+  const cards = document.querySelectorAll('.item-card');
+  cards.forEach(card => {
+    const id = card.getAttribute('data-id');
+    const link = card.querySelector('.railway-link');
+    if (id && link) {
+      link.href = `https://ku-tetsu.net/${id}.html`;
+    }
   });
 });
+
+// ソート用関数
+function sortCards(selectElement, containerId) {
+  const value = selectElement.value;
+  const container = document.getElementById(containerId);
+  if (!container) return;
+
+  const cards = Array.from(container.getElementsByClassName('item-card'));
+
+  cards.sort((a, b) => {
+    if (value === 'id-asc') {
+      // 作品番号（ID）：低い順（昇順）
+      const idA = parseInt(a.getAttribute('data-id'), 10) || 0;
+      const idB = parseInt(b.getAttribute('data-id'), 10) || 0;
+      return idA - idB;
+    } else if (value === 'score-desc') {
+      // スコア：高い順（降順）
+      const scoreA = parseFloat(a.getAttribute('data-score')) || 0;
+      const scoreB = parseFloat(b.getAttribute('data-score')) || 0;
+      return scoreB - scoreA;
+    }
+    return 0;
+  });
+
+  // 並び替えた順にDOMを再配置
+  cards.forEach(card => container.appendChild(card));
+}
   </script>
 </head>
 <body>
@@ -94,74 +102,211 @@
       <a class="orB" href="#1_Odakyuhakone">小田急箱根</a>
     </div>
   </details>
-  </main>
-<p><a href="#" onclick="window.history.back(); return false;">前のページに戻る</a></p>
-<details><summary>会社別目次</summary>
-<p><a class="rB" href="#1_IRIshikawatetsudo">IRいしかわ鉄道線</a></p>
-<p><a class="rB" href="#1_IGRiwategingatetsudo">IGRいわて銀河鉄道</a></p>
-<p><a class="rB" href="#1_Aichikanjotetsudo">愛知環状鉄道</a></p>
-<p><a class="rB" href="#1_Aichikosokukotsu">愛知高速交通</a></p>
-<p><a class="rB" href="#1_Aidutetsudo">会津鉄道</a></p>
-<p><a class="rB" href="#1_Ainokazetoyamatetsudo">あいの風とやま鉄道</a></p>
-<p><a class="rB" href="#1_Aoimoritetsudo">青い森鉄道</a></p>
-<p><a class="rB" href="#1_Akitanairikujukantetsudo">秋田内陸縦貫鉄道</a></p>
-<p><a class="rB" href="#1_Akechitetsudo">明知鉄道</a></p>
-<p><a class="rB" href="#1_Asakaigantetsudo">阿佐海岸鉄道</a></p>
-<p><a class="rB" href="#1_Atamiropeway">アタミロープウェイ</a></p>
-<p><a class="rB" href="#1_Abukumakyuko">阿武隈急行</a></p>
-<p><a class="rB" href="#1_Amagitetsudo">甘木鉄道</a></p>
-<p><a class="rB" href="#1_Alpicokotsu">アルピコ交通</a></p>
-<p><a class="rB" href="#1_Alpinabi">アルピナBI</a></p>
-<p><a class="rB" href="#1_Igatetsudo">伊賀鉄道</a></p>
-<p><a class="rB" href="#1_Ikekankokaihatsu">池観光開発</a></p>
-<p><a class="rB" href="#1_Isumitetsudo">いすみ鉄道</a></p>
-<p><a class="rB" href="#1_Izukyuko">伊豆急行</a></p>
-<p><a class="rB" href="#1_Izuhakonetetsudo">伊豆箱根鉄道</a></p>
-<p><a class="rB" href="#1_Isetetsudo">伊勢鉄道</a></p>
-<p><a class="rB" href="#1_Ichibatadensha">一畑電車</a></p>
-<p><a class="rB" href="#1_Iharatetsudo">井原鉄道</a></p>
-<p><a class="rB" href="#1_Iyotetsudo">伊予鉄道</a></p>
-<p><a class="rB" href="#1_Iwatekaihatsutetsudo">岩手開発鉄道</a></p>
-<p><a class="rB" href="#1_WILLER_TRAINS">WILLER TRAINS(京都丹後鉄道)</a></p>
-<p><a class="rB" href="#1_Uedadentetsu">上田電鉄</a></p>
-<p><a class="rB" href="#1_Utsunomiyalrt">宇都宮ライトレール</a></p>
-<p><a class="rB" href="#1_Eizandentetsu">叡山電鉄</a></p>
-<p><a class="rB" href="#1_Echigotokimekitetsudo">えちごトキめき鉄道</a></p>
-<p><a class="rB" href="#1_Echizentetsudo">えちぜん鉄道</a></p>
-<p><a class="rB" href="#1_Enoshimadentetsu">江ノ島電鉄</a></p>
-<p><a class="rB" href="#1_Ensyutetsudo">遠州鉄道</a></p>
-<p><a class="rB" href="#1_Omitetsudo">近江鉄道</a></p>
-<p><a class="rB" href="#1_Oigawatetsudo">大井川鉄道</a></p>
-<p><a class="rB" href="#1_Osakashikosokudenkikido">大阪市高速電気軌道</a></p>
-<p><a class="rB" href="#1_Osakamonorail">大阪モノレール(大阪高速鉄道)</a></p>
-<p><a class="rB" href="#1_Oyamakankodentetsu">大山観光電鉄</a></p>
-<p><a class="rB" href="#1_Okayamadenkikido">岡山電気軌道</a></p>
-<p><a class="rB" href="#1_Okuhikankokaihatsu">奥飛観光開発</a></p>
-<p><a class="rB" href="#1_Okinawatoshimonorail">沖縄都市モノレール</a></p>
-<p><a class="rB" href="#1_Odakyudentetsu">小田急電鉄</a></p>
-<p><a class="rB" href="#1_Odakyuhakone">小田急箱根</a></p>
+
+  <!-- メインコンテンツ -->
+  <main>
+    <!-- IRいしかわ鉄道 -->
+    <section>
+  <a id="1_IRIshikawatetsudo"></a>
+  <h2>IRいしかわ鉄道</h2>
+  <h3>IRいしかわ鉄道線</h3>
+
+  <!-- ソート用UI（選択すると自動で並び替わります） -->
+  <div class="sort-controls">
+    <label for="sort-select-ishikawa">並び替え：</label>
+    <select id="sort-select-ishikawa" class="sort-select" onchange="sortCards(this, 'container-ishikawa')">
+      <option value="id-asc">作品番号：低い順（古い順）</option>
+      <option value="score-desc">スコア：高い順</option>
+    </select>
+  </div>
+
+  <!-- カードを格納するグリッドコンテナ -->
+  <div class="card-grid" id="container-ishikawa">
+<details class="item-card" data-id="82865" data-score="48">
+<summary>
+<div class="card-header-info">
+<span class="card-id-label">ID: 82865</span>
+<span class="card-score-badge">スコア: <span class="score">48</span></span>
+</div>
+<a class="rB railway-link" href="#">雲雀中山</a>
+</summary>
+<div class="card-detail">
+<p>補足事項:倶利伽羅～金沢のみ</p>
+</div>
 </details>
-<a id="1_IRIshikawatetsudo"></a>
-<h2>IRいしかわ鉄道</h2>
-<h3>IRいしかわ鉄道線</h3>
-<ol>
-<li><a class="rB" href="https://ku-tetsu.net/82865.html">[!]IRいしかわ鉄道線(雲雀中山)</a></li>
-<li><a class="rB" href="https://ku-tetsu.net/118719.html">[!]IRいしかわ鉄道線(天神川コノカ)</a></li>
-<li><a class="rB" href="https://ku-tetsu.net/162860.html">[!]IRいしかわ鉄道線(特急東海)</a></li>
-<li><a class="rB" href="https://ku-tetsu.net/163873.html">[!]IRいしかわ鉄道線(越後ラプラス)</a></li>
-<li><a class="rB" href="https://ku-tetsu.net/203565.html">[!]IRいしかわ鉄道線(大阪環状線内回り)</a></li>
-<li><a class="rB" href="https://ku-tetsu.net/268047.html">IRいしかわ鉄道線[直江津~敦賀有](KQKO)</a></li>
-<li><a class="rB" href="https://ku-tetsu.net/286288.html">[!]IRいしかわ鉄道線(北風の又三郎)</a></li>
-<li><a class="rB" href="https://ku-tetsu.net/289873.html">IRいしかわ鉄道線(えいきゅーとーど)</a></li>
-<li><a class="rB" href="https://ku-tetsu.net/316617.html">IRいしかわ鉄道線[直江津~敦賀有](琴電ファン)</a></li>
-<li><a class="rB" href="https://ku-tetsu.net/319978.html">IRいしかわ鉄道線(二戸)</a></li>
-<li><a class="rB" href="https://ku-tetsu.net/331594.html">IRいしかわ鉄道線(琉龍)</a></li>
-<li><a class="rB" href="https://ku-tetsu.net/378308.html">IRいしかわ鉄道線(新んミリりん)</a></li>
-<li><a class="rB" href="https://ku-tetsu.net/381244.html">IRいしかわ鉄道線(姫路快速)</a></li>
-<li><a class="rB" href="https://ku-tetsu.net/400766.html">IRいしかわ鉄道線(初梅みのん)</a></li>
-<li><a class="rB" href="https://ku-tetsu.net/406486.html">IRいしかわ鉄道線(下総みなと)</a></li>
-<li><a href="https://ku-tetsu.net/407066.html" class="rB">IRいしかわ鉄道(doraemonzuki)</a></li>
-</ol>
+<details class="item-card" data-id="118719" data-score="74">
+<summary>
+<div class="card-header-info">
+<span class="card-id-label">ID: 118719</span>
+<span class="card-score-badge">スコア: <span class="score">74</span></span>
+</div>
+<a class="rB railway-link" href="#">天神川コノカ</a>
+</summary>
+<div class="card-detail">
+<p>補足事項:倶利伽羅～金沢のみ</p>
+</div>
+</details>
+<details class="item-card" data-id="162860" data-score="98">
+<summary>
+<div class="card-header-info">
+<span class="card-id-label">ID: 162860</span>
+<span class="card-score-badge">スコア: <span class="score">98</span></span>
+</div>
+<a class="rB railway-link" href="#">特急東海</a>
+</summary>
+<div class="card-detail">
+<p>補足事項:倶利伽羅～金沢のみ</p>
+</div>
+</details>
+    <details class="item-card" data-id="163873" data-score="417">
+<summary>
+<div class="card-header-info">
+<span class="card-id-label">ID: 163873</span>
+<span class="card-score-badge">スコア: <span class="score">417</span></span>
+</div>
+<a class="rB railway-link" href="#">越後ラプラス</a>
+</summary>
+<div class="card-detail">
+<p>補足事項:倶利伽羅～金沢のみ</p>
+</div>
+</details>
+    <details class="item-card" data-id="203565" data-score="73">
+<summary>
+<div class="card-header-info">
+<span class="card-id-label">ID: 203565</span>
+<span class="card-score-badge">スコア: <span class="score">73</span></span>
+</div>
+<a class="rB railway-link" href="#">大阪環状線内回り</a>
+</summary>
+<div class="card-detail">
+<p>補足事項:倶利伽羅～金沢のみ</p>
+</div>
+</details>
+<details class="item-card" data-id="268047" data-score="183">
+<summary>
+<div class="card-header-info">
+<span class="card-id-label">ID: 268047</span>
+<span class="card-score-badge">スコア: <span class="score">183</span></span>
+</div>
+<a class="rB railway-link" href="#">KQKO</a>
+</summary>
+<div class="card-detail">
+<p>補足事項:</p>
+</div>
+</details>
+<details class="item-card" data-id="286288" data-score="64">
+<summary>
+<div class="card-header-info">
+<span class="card-id-label">ID: 286288</span>
+<span class="card-score-badge">スコア: <span class="score">64</span></span>
+</div>
+<a class="rB railway-link" href="#">北風の又三郎</a>
+</summary>
+<div class="card-detail">
+<p>補足事項:倶利伽羅～金沢のみ</p>
+</div>
+</details>
+<details class="item-card" data-id="289873" data-score="299">
+<summary>
+<div class="card-header-info">
+<span class="card-id-label">ID: 289873</span>
+<span class="card-score-badge">スコア: <span class="score">299</span></span>
+</div>
+<a class="rB railway-link" href="#">えいきゅーとーど</a>
+</summary>
+<div class="card-detail">
+<p>補足事項:</p>
+</div>
+</details>
+<details class="item-card" data-id="316617" data-score="106">
+<summary>
+<div class="card-header-info">
+<span class="card-id-label">ID: 316617</span>
+<span class="card-score-badge">スコア: <span class="score">106</span></span>
+</div>
+<a class="rB railway-link" href="#">琴電ファン</a>
+</summary>
+<div class="card-detail">
+<p>補足事項:</p>
+</div>
+</details>
+<details class="item-card" data-id="319978" data-score="190">
+<summary>
+<div class="card-header-info">
+<span class="card-id-label">ID: 319978</span>
+<span class="card-score-badge">スコア: <span class="score">190</span></span>
+</div>
+<a class="rB railway-link" href="#">二戸</a>
+</summary>
+<div class="card-detail">
+<p>補足事項:</p>
+</div>
+</details>
+<details class="item-card" data-id="381244" data-score="530">
+<summary>
+<div class="card-header-info">
+<span class="card-id-label">ID: 381244</span>
+<span class="card-score-badge">スコア: <span class="score">530</span></span>
+</div>
+<a class="rB railway-link" href="#">姫路快速@びわこ路快速</a>
+</summary>
+<div class="card-detail">
+<p>補足事項:</p>
+</div>
+</details>
+<details class="item-card" data-id="406486" data-score="561">
+<summary>
+<div class="card-header-info">
+<span class="card-id-label">ID: 406486</span>
+<span class="card-score-badge">スコア: <span class="score">561</span></span>
+</div>
+<a class="rB railway-link" href="#">下総みなと</a>
+</summary>
+<div class="card-detail">
+<p>補足事項:</p>
+</div>
+</details>
+<details class="item-card" data-id="407066" data-score="1312">
+<summary>
+<div class="card-header-info">
+<span class="card-id-label">ID: 407066</span>
+<span class="card-score-badge">スコア: <span class="score">1312</span></span>
+</div>
+<a class="rB railway-link" href="#">doraemonzuki</a>
+</summary>
+<div class="card-detail">
+<p>補足事項:</p>
+</div>
+</details>
+<details class="item-card" data-id="457939" data-score="1109">
+<summary>
+<div class="card-header-info">
+<span class="card-id-label">ID: 457939</span>
+<span class="card-score-badge">スコア: <span class="score">1109</span></span>
+</div>
+<a class="rB railway-link" href="#">松ヶ崎ほのか</a>
+</summary>
+<div class="card-detail">
+<p>補足事項:</p>
+</div>
+<details class="item-card" data-id="413034" data-score="316">
+<summary>
+<div class="card-header-info">
+<span class="card-id-label">ID: 413034</span>
+<span class="card-score-badge">スコア: <span class="score">316</span></span>
+</div>
+<a class="rB railway-link" href="#">浜松電車区</a>
+</summary>
+<div class="card-detail">
+<p>補足事項:</p>
+</div>
+</details>
+</details>
+  </div>
+</section>
+    <!-- （以下、各鉄道会社のセクションも同様に綺麗に整理） -->
+
+  </main>
 <a id="1_IGRiwategingatetsudo"></a>
 <h2>IGRいわて銀河鉄道</h2>
 <h3>IGRいわて銀河鉄道線</h3>
