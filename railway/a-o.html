@@ -304,15 +304,33 @@ function sortCards(selectElement, containerId) {
 </details>
   </div>
 </section>
-    <!-- （以下、各鉄道会社のセクションも同様に綺麗に整理） -->
+<section>
+  <a id="1_IGRiwategingatetsudo"></a>
+  <h2>IGRいわて銀河鉄道</h2>
+  <h3>IGRいわて銀河鉄道</h3>
+  <div class="sort-controls">
+    <label for="sort-select-igriwate">並び替え：</label>
+    <select id="sort-select-igriwate" class="sort-select" onchange="sortCards(this, 'container-igriwate')">
+      <option value="id-asc">作品番号：低い順（古い順）</option>
+      <option value="score-desc">スコア：高い順</option>
+    </select>
+  </div>
+  <div class="card-grid" id="container-igriwate">
+<details class="item-card" data-id="110123" data-score="149">
+<summary>
+<div class="card-header-info">
+<span class="card-id-label">ID: 110123</span>
+<span class="card-score-badge">スコア: <span class="score">149</span></span>
+</div>
+<a class="rB railway-link" href="#">田部駅長</a>
+</summary>
+<div class="card-detail">
+<p>補足事項:</p>
+</div>
+</details>
 
-  </main>
-<a id="1_IGRiwategingatetsudo"></a>
-<h2>IGRいわて銀河鉄道</h2>
-<h3>IGRいわて銀河鉄道線</h3>
-<ol>
-<li><a href="https://ku-tetsu.net/412704.html" class="rB">IGRいわて銀河鉄道線(doraemonzuki)</a></li>
-</ol>
+  </div>
+</section>
 <a id="1_Aichikanjotetsudo"></a></li>
 <h2>愛知環状鉄道</h2>
 <h3>愛知環状鉄道線</h3>
@@ -674,3 +692,6 @@ function sortCards(selectElement, containerId) {
 <ol>
 <li><a href="https://ku-tetsu.net/400093.html" class="rB">小田急箱根鉄道線(doraemonzuki)</a></li>
 </ol>
+  </main>
+</body>
+</html>
