@@ -1,4 +1,46 @@
 /* 共通設定・基本ボタン（.rB） */
+/* 項目を横並びにするグリッドコンテナ */
+.card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 10px;
+  margin-top: 10px;
+}
+
+/* 各項目のカード・detailsデザイン */
+.item-card {
+  background-color: #f8f9fa;
+  border: 1px solid #dcdcdc;
+  border-radius: 6px;
+  padding: 8px;
+  margin-bottom: 0; /* グリッドのgapで余白を取るため打ち消し */
+}
+
+/* summaryのデフォルトの矢印を整える、または見栄えを調整 */
+.item-card summary {
+  cursor: pointer;
+  font-weight: bold;
+}
+
+/* ボタン（.rB）がカード内で自然に収まるように調整 */
+.item-card .rB {
+  display: inline-block;
+  margin: 0;
+  width: 100%;
+  box-sizing: border-box;
+  text-align: center;
+}
+
+/* 展開される詳細スペース */
+.card-detail {
+  margin-top: 8px;
+  padding: 8px;
+  background-color: #ffffff;
+  border: 1px solid #e0e0e0;
+  border-radius: 4px;
+  font-size: 14px;
+  color: #333333;
+}
 .rB {
   background-color: #0066cc;
   border-radius: 6px;
