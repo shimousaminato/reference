@@ -1,0 +1,651 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KML 構成ポイント（頂点）カウンター</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        }
+        canvas {
+            cursor: grab;
+        }
+        canvas:active {
+            cursor: grabbing;
+        }
+    </style>
+</head>
+<body class="bg-slate-900 text-slate-100 min-h-screen flex flex-col">
+
+    <!-- ヘッダー -->
+    <header class="bg-slate-800 border-b border-slate-700 p-4 shadow-md">
+        <div class="max-w-7xl mx-auto flex justify-between items-center">
+            <div class="flex items-center space-x-3">
+                <i class="fa-solid fa-route text-indigo-400 text-2xl"></i>
+                <h1 class="text-xl font-bold text-white">KML 構成ポイント Counter & Viewer</h1>
+            </div>
+            <span class="text-xs bg-slate-700 text-slate-300 px-3 py-1 rounded-full border border-slate-600">
+                線の頂点（Coordinates）解析ツール
+            </span>
+        </div>
+    </header>
+
+    <!-- メインコンテンツ -->
+    <main class="flex-1 max-w-7xl w-full mx-auto p-4 md:p-6 grid grid-cols-1 lg:grid-cols-3 gap-6">
+
+        <!-- 左側：コントロール＆統計パネル -->
+        <div class="lg:col-span-1 flex flex-col gap-6">
+            
+            <!-- ドロップエリア -->
+            <div id="dropZone" class="border-2 border-dashed border-indigo-500/50 hover:border-indigo-400 rounded-xl p-5 text-center bg-slate-800/60 hover:bg-slate-800 transition-all cursor-pointer flex flex-col items-center justify-center relative">
+                <input type="file" id="fileInput" accept=".kml" class="hidden">
+                <i class="fa-solid fa-cloud-arrow-up text-3xl text-indigo-400 mb-2"></i>
+                <p class="font-semibold text-slate-200 text-sm">KMLファイルをドラッグ＆ドロップ</p>
+                <p class="text-xs text-slate-400 mt-0.5">またはクリックしてファイルを選択</p>
+            </div>
+
+            <!-- サマリー・統計情報 -->
+            <div class="bg-slate-800 rounded-xl p-5 border border-slate-700 shadow-lg space-y-4">
+                <h2 class="text-sm font-semibold text-slate-400 uppercase tracking-wider border-b border-slate-700 pb-2">
+                    <i class="fa-solid fa-chart-pie mr-2 text-indigo-400"></i>全体解析結果
+                </h2>
+
+                <!-- 総ポイント数表示 -->
+                <div class="bg-indigo-950/50 border border-indigo-500/30 rounded-lg p-3">
+                    <span class="text-xs font-semibold text-indigo-300 uppercase tracking-wide">総 構成ポイント（頂点）数</span>
+                    <div class="flex items-baseline space-x-2 mt-0.5">
+                        <span id="totalPoints" class="text-3xl font-extrabold text-indigo-400">0</span>
+                        <span class="text-slate-400 text-xs">points</span>
+                    </div>
+                </div>
+
+                <!-- その他詳細 -->
+                <div class="space-y-2 text-xs text-slate-300">
+                    <div class="flex justify-between items-center py-1 border-b border-slate-700/50">
+                        <span class="text-slate-400"><i class="fa-solid fa-file-code w-4 text-indigo-400"></i>ファイル名:</span>
+                        <span id="fileName" class="font-medium truncate max-w-[140px] text-slate-200">-</span>
+                    </div>
+                    <div class="flex justify-between items-center py-1 border-b border-slate-700/50">
+                        <span class="text-slate-400"><i class="fa-solid fa-vector-square w-4 text-indigo-400"></i>線の数:</span>
+                        <span id="featureCount" class="font-semibold text-white">0</span>
+                    </div>
+                    <div class="flex justify-between items-center py-1">
+                        <span class="text-slate-400"><i class="fa-solid fa-calculator w-4 text-indigo-400"></i>平均ポイント数/線:</span>
+                        <span id="avgPoints" class="font-semibold text-white">0</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 出力用 HTML テキストエリア -->
+            <div class="bg-slate-800 rounded-xl p-5 border border-slate-700 shadow-lg space-y-3">
+                <div class="flex justify-between items-center border-b border-slate-700 pb-2">
+                    <h2 class="text-sm font-semibold text-slate-300">
+                        <i class="fa-solid fa-code mr-2 text-indigo-400"></i>HTML出力結果
+                    </h2>
+                    <button id="copyBtn" class="text-xs bg-indigo-600 hover:bg-indigo-500 text-white px-2.5 py-1 rounded transition-all flex items-center gap-1 shadow">
+                        <i class="fa-solid fa-copy"></i> コピー
+                    </button>
+                </div>
+                <textarea id="outputArea" readonly class="w-full h-36 bg-slate-950 border border-slate-700 rounded-lg p-2.5 text-xs font-mono text-emerald-400 focus:outline-none resize-none leading-relaxed" placeholder="KMLファイルを読み込むとここに指定されたHTML形式のテキストが出力されます..."></textarea>
+            </div>
+
+            <!-- 各線の内訳リストパネル -->
+            <div class="bg-slate-800 rounded-xl p-5 border border-slate-700 shadow-lg flex-1 flex flex-col min-h-[250px] max-h-[350px]">
+                <div class="flex justify-between items-center mb-3 border-b border-slate-700 pb-2">
+                    <h2 class="text-sm font-semibold text-slate-300">
+                        <i class="fa-solid fa-list-ol mr-2 text-indigo-400"></i>線ごとのポイント数一覧
+                    </h2>
+                    <span id="lineListBadge" class="text-[10px] bg-indigo-900/60 text-indigo-300 px-2 py-0.5 rounded-full border border-indigo-700/50">0 件</span>
+                </div>
+                
+                <!-- リスト本体（スクロール可） -->
+                <div id="lineList" class="flex-1 overflow-y-auto space-y-1.5 pr-1 custom-scrollbar">
+                    <p class="text-xs text-slate-500 text-center py-8">KMLファイルを読み込むと<br>ここに各線の内訳が表示されます</p>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- 右側：Canvas 描画エリア -->
+        <div class="lg:col-span-2 bg-slate-800 rounded-xl border border-slate-700 overflow-hidden relative shadow-lg flex flex-col min-h-[450px] lg:min-h-full">
+            <!-- Canvasヘッダーバー -->
+            <div class="bg-slate-800/90 backdrop-blur-md px-4 py-3 border-b border-slate-700 flex justify-between items-center z-10">
+                <div class="flex items-center space-x-2">
+                    <span class="inline-block w-3 h-3 rounded-full bg-emerald-500"></span>
+                    <span class="text-xs font-semibold text-slate-300">プレビュー 描画 Canvas</span>
+                </div>
+                <!-- 凡例 -->
+                <div class="flex items-center space-x-4 text-xs text-slate-400">
+                    <div class="flex items-center space-x-1">
+                        <span class="w-3 h-0.5 bg-indigo-400 inline-block"></span>
+                        <span>ライン</span>
+                    </div>
+                    <div class="flex items-center space-x-1">
+                        <span class="w-2 h-2 bg-rose-500 rounded-full inline-block"></span>
+                        <span>構成ポイント（頂点）</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Canvas コンテナ -->
+            <div id="canvasContainer" class="flex-1 w-full h-full relative bg-slate-950 overflow-hidden">
+                <canvas id="mapCanvas" class="w-full h-full block"></canvas>
+                
+                <!-- リセットボタン位置の調整 -->
+                <button id="resetViewBtn" class="absolute bottom-4 right-4 bg-slate-800/90 hover:bg-slate-700 active:bg-slate-900 border border-slate-600 text-slate-200 px-3 py-2 rounded-lg text-xs font-medium transition-all shadow-lg flex items-center gap-2 backdrop-blur-sm z-10">
+                    <i class="fa-solid fa-compress"></i> 全体表示に戻す
+                </button>
+
+                <!-- 空状態メッセージ -->
+                <div id="emptyState" class="absolute inset-0 flex flex-col items-center justify-center text-slate-500 pointer-events-none p-4 text-center">
+                    <i class="fa-solid fa-map-location-dot text-5xl mb-3 opacity-40"></i>
+                    <p class="text-sm font-medium">KMLファイルを読み込むと、ここに線と構成ポイントが描画されます</p>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- メッセージ表示モーダル/トースト -->
+    <div id="toast" class="fixed bottom-6 right-6 bg-slate-800 border border-slate-600 text-slate-100 px-4 py-3 rounded-xl shadow-xl transition-all duration-300 transform translate-y-20 opacity-0 flex items-center space-x-3 z-50">
+        <i id="toastIcon" class="fa-solid fa-circle-info text-indigo-400 text-lg"></i>
+        <span id="toastMessage" class="text-sm font-medium">メッセージ</span>
+    </div>
+
+    <script>
+        // DOM要素
+        const dropZone = document.getElementById('dropZone');
+        const fileInput = document.getElementById('fileInput');
+        const totalPointsEl = document.getElementById('totalPoints');
+        const featureCountEl = document.getElementById('featureCount');
+        const avgPointsEl = document.getElementById('avgPoints');
+        const fileNameEl = document.getElementById('fileName');
+        const outputArea = document.getElementById('outputArea');
+        const copyBtn = document.getElementById('copyBtn');
+        const resetViewBtn = document.getElementById('resetViewBtn');
+        const lineListEl = document.getElementById('lineList');
+        const lineListBadgeEl = document.getElementById('lineListBadge');
+        const canvas = document.getElementById('mapCanvas');
+        const ctx = canvas.getContext('2d');
+        const canvasContainer = document.getElementById('canvasContainer');
+        const emptyState = document.getElementById('emptyState');
+
+        // データ＆ビュー変数
+        let currentFileName = '';
+        let parsedLines = []; // [{ id: number, name: string, points: [{lon, lat}, ...], bounds: {} }]
+        let selectedLineId = null; // 選択・ハイライトされた線のID
+        let allPointsCount = 0;
+        let bounds = { minLon: Infinity, maxLon: -Infinity, minLat: Infinity, maxLat: -Infinity };
+        
+        // Canvasのビューポート移動・拡大縮小状態
+        let transform = {
+            scale: 1,
+            offsetX: 0,
+            offsetY: 0
+        };
+        let isDragging = false;
+        let dragStart = { x: 0, y: 0 };
+
+        // Canvasのサイズ設定
+        function resizeCanvas() {
+            canvas.width = canvasContainer.clientWidth;
+            canvas.height = canvasContainer.clientHeight;
+            drawMap();
+        }
+
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
+
+        // トースト通知関数
+        function showToast(message, isError = false) {
+            const toast = document.getElementById('toast');
+            const toastMessage = document.getElementById('toastMessage');
+            const toastIcon = document.getElementById('toastIcon');
+
+            toastMessage.textContent = message;
+            toastIcon.className = isError 
+                ? "fa-solid fa-triangle-exclamation text-rose-400 text-lg"
+                : "fa-solid fa-circle-check text-emerald-400 text-lg";
+
+            toast.classList.remove('translate-y-20', 'opacity-0');
+            setTimeout(() => {
+                toast.classList.add('translate-y-20', 'opacity-0');
+            }, 3500);
+        }
+
+        // イベントリスナー: ファイル選択
+        dropZone.addEventListener('click', () => fileInput.click());
+        fileInput.addEventListener('change', (e) => {
+            if (e.target.files.length > 0) {
+                handleFile(e.target.files[0]);
+            }
+        });
+
+        // ドラッグ＆ドロップ
+        dropZone.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            dropZone.classList.add('border-indigo-400', 'bg-slate-800');
+        });
+        dropZone.addEventListener('dragleave', () => {
+            dropZone.classList.remove('border-indigo-400', 'bg-slate-800');
+        });
+        dropZone.addEventListener('drop', (e) => {
+            e.preventDefault();
+            dropZone.classList.remove('border-indigo-400', 'bg-slate-800');
+            if (e.dataTransfer.files.length > 0) {
+                handleFile(e.dataTransfer.files[0]);
+            }
+        });
+
+        // KMLファイルの読み込み処理
+        function handleFile(file) {
+            if (!file.name.toLowerCase().endsWith('.kml')) {
+                showToast('KMLファイル(.kml)を選択してください。', true);
+                return;
+            }
+
+            currentFileName = file.name;
+            fileNameEl.textContent = file.name;
+            const reader = new FileReader();
+
+            reader.onload = function (e) {
+                try {
+                    parseKML(e.target.result);
+                    showToast(`読み込み成功: ${parsedLines.length}本の線 (${allPointsCount}ポイント)`);
+                } catch (err) {
+                    console.error(err);
+                    showToast('KMLの解析に失敗しました。ファイル形式を確認してください。', true);
+                }
+            };
+
+            reader.readAsText(file);
+        }
+
+        // KML XMLの解析処理
+        function parseKML(xmlString) {
+            const parser = new DOMParser();
+            const xmlDoc = parser.parseFromString(xmlString, "text/xml");
+
+            parsedLines = [];
+            selectedLineId = null;
+            allPointsCount = 0;
+            bounds = { minLon: Infinity, maxLon: -Infinity, minLat: Infinity, maxLat: -Infinity };
+
+            // Placemark単位で取得して、名前と座標情報を関連付け
+            const placemarks = xmlDoc.getElementsByTagName('Placemark');
+
+            let lineIdCounter = 0;
+
+            for (let p = 0; p < placemarks.length; p++) {
+                const placemark = placemarks[p];
+                // Placemark名を取得
+                const nameNode = placemark.getElementsByTagName('name')[0];
+                const placemarkName = nameNode ? nameNode.textContent.trim() : `線 #${p + 1}`;
+
+                // Placemark内の coordinates タグを取得
+                const coordNodes = placemark.getElementsByTagName('coordinates');
+
+                for (let c = 0; c < coordNodes.length; c++) {
+                    const rawText = coordNodes[c].textContent.trim();
+                    if (!rawText) continue;
+
+                    const coordTokens = rawText.split(/\s+/);
+                    const linePoints = [];
+                    const lineBounds = { minLon: Infinity, maxLon: -Infinity, minLat: Infinity, maxLat: -Infinity };
+
+                    for (let token of coordTokens) {
+                        if (!token) continue;
+                        const parts = token.split(',').map(Number);
+                        if (parts.length >= 2 && !isNaN(parts[0]) && !isNaN(parts[1])) {
+                            const lon = parts[0];
+                            const lat = parts[1];
+
+                            linePoints.push({ lon, lat });
+
+                            // 全体バウンディングボックス
+                            if (lon < bounds.minLon) bounds.minLon = lon;
+                            if (lon > bounds.maxLon) bounds.maxLon = lon;
+                            if (lat < bounds.minLat) bounds.minLat = lat;
+                            if (lat > bounds.maxLat) bounds.maxLat = lat;
+
+                            // 該当線のみのバウンディングボックス
+                            if (lon < lineBounds.minLon) lineBounds.minLon = lon;
+                            if (lon > lineBounds.maxLon) lineBounds.maxLon = lon;
+                            if (lat < lineBounds.minLat) lineBounds.minLat = lat;
+                            if (lat > lineBounds.maxLat) lineBounds.maxLat = lat;
+                        }
+                    }
+
+                    if (linePoints.length > 0) {
+                        lineIdCounter++;
+                        const subName = coordNodes.length > 1 ? `${placemarkName} (${c + 1})` : placemarkName;
+                        parsedLines.push({
+                            id: lineIdCounter,
+                            name: subName,
+                            points: linePoints,
+                            bounds: lineBounds
+                        });
+                        allPointsCount += linePoints.length;
+                    }
+                }
+            }
+
+            // Placemark構造以外の野良 <coordinates> の救済処理
+            if (parsedLines.length === 0) {
+                const coordNodes = xmlDoc.getElementsByTagName('coordinates');
+                for (let i = 0; i < coordNodes.length; i++) {
+                    const rawText = coordNodes[i].textContent.trim();
+                    if (!rawText) continue;
+
+                    const coordTokens = rawText.split(/\s+/);
+                    const linePoints = [];
+                    const lineBounds = { minLon: Infinity, maxLon: -Infinity, minLat: Infinity, maxLat: -Infinity };
+
+                    for (let token of coordTokens) {
+                        if (!token) continue;
+                        const parts = token.split(',').map(Number);
+                        if (parts.length >= 2 && !isNaN(parts[0]) && !isNaN(parts[1])) {
+                            const lon = parts[0];
+                            const lat = parts[1];
+
+                            linePoints.push({ lon, lat });
+
+                            if (lon < bounds.minLon) bounds.minLon = lon;
+                            if (lon > bounds.maxLon) bounds.maxLon = lon;
+                            if (lat < bounds.minLat) bounds.minLat = lat;
+                            if (lat > bounds.maxLat) bounds.maxLat = lat;
+
+                            if (lon < lineBounds.minLon) lineBounds.minLon = lon;
+                            if (lon > lineBounds.maxLon) lineBounds.maxLon = lon;
+                            if (lat < lineBounds.minLat) lineBounds.minLat = lat;
+                            if (lat > lineBounds.maxLat) lineBounds.maxLat = lat;
+                        }
+                    }
+
+                    if (linePoints.length > 0) {
+                        lineIdCounter++;
+                        parsedLines.push({
+                            id: lineIdCounter,
+                            name: `フィーチャルート ${lineIdCounter}`,
+                            points: linePoints,
+                            bounds: lineBounds
+                        });
+                        allPointsCount += linePoints.length;
+                    }
+                }
+            }
+
+            // 統計データの反映
+            totalPointsEl.textContent = allPointsCount.toLocaleString();
+            featureCountEl.textContent = parsedLines.length.toLocaleString();
+            avgPointsEl.textContent = parsedLines.length > 0 
+                ? (allPointsCount / parsedLines.length).toFixed(1) 
+                : '0';
+
+            // textareaへHTMLテンプレート出力
+            updateTextareaOutput();
+
+            // リストの生成
+            renderLineList();
+
+            if (allPointsCount > 0) {
+                emptyState.style.display = 'none';
+                fitToBounds();
+            } else {
+                emptyState.style.display = 'flex';
+                showToast('KML内に有効な線・ポリゴンの座標が見つかりませんでした。', true);
+            }
+        }
+
+        // テキストエリアへのHTML出力生成関数
+        function updateTextareaOutput() {
+            // 拡張子（.kml等）を除去したファイル名を取得
+            const fileNameWithoutExt = currentFileName.replace(/\.[^/.]+$/, "");
+
+            // 改行はそのままに、各行前後のスペースを削除したHTML文字列を作成
+            const htmlTemplate = `<details class="item-card" data-id="${fileNameWithoutExt}" data-score="${allPointsCount}">
+<summary>
+<div class="card-header-info">
+<span class="card-id-label">ID: ${fileNameWithoutExt}</span>
+<span class="card-score-badge">スコア: <span class="score">${allPointsCount}</span></span>
+</div>
+<a class="rB railway-link" href="#">作成者</a>
+</summary>
+<div class="card-detail">
+<p>補足事項:</p>
+</div>
+</details>`;
+
+            outputArea.value = htmlTemplate;
+        }
+
+        // テキストエリアのコピー機能
+        copyBtn.addEventListener('click', () => {
+            if (!outputArea.value) {
+                showToast('コピーする内容がありません。', true);
+                return;
+            }
+            outputArea.select();
+            document.execCommand('copy');
+            showToast('HTMLコードをクリップボードにコピーしました！');
+        });
+
+        // 個別の線一覧リストを描画
+        function renderLineList() {
+            lineListEl.innerHTML = '';
+            lineListBadgeEl.textContent = `${parsedLines.length} 件`;
+
+            if (parsedLines.length === 0) {
+                lineListEl.innerHTML = `<p class="text-xs text-slate-500 text-center py-8">KMLファイルを読み込むと<br>ここに各線の内訳が表示されます</p>`;
+                return;
+            }
+
+            parsedLines.forEach(line => {
+                const item = document.createElement('div');
+                const isSelected = selectedLineId === line.id;
+
+                item.className = `p-2.5 rounded-lg border text-xs cursor-pointer transition-all flex justify-between items-center ${
+                    isSelected 
+                        ? 'bg-indigo-900/80 border-indigo-500 text-white shadow' 
+                        : 'bg-slate-900/50 border-slate-700/70 text-slate-300 hover:bg-slate-700/60 hover:border-slate-600'
+                }`;
+
+                item.innerHTML = `
+                    <div class="flex items-center space-x-2 truncate mr-2">
+                        <i class="fa-solid fa-route ${isSelected ? 'text-amber-400' : 'text-indigo-400'}"></i>
+                        <span class="font-medium truncate" title="${line.name}">${line.name}</span>
+                    </div>
+                    <div class="flex items-center space-x-1 shrink-0">
+                        <span class="font-bold ${isSelected ? 'text-amber-300' : 'text-indigo-300'}">${line.points.length.toLocaleString()}</span>
+                        <span class="text-[10px] text-slate-400">pt</span>
+                    </div>
+                `;
+
+                item.addEventListener('click', () => {
+                    selectLine(line.id);
+                });
+
+                lineListEl.appendChild(item);
+            });
+        }
+
+        // 特定の線を選択してフォーカス・ズーム
+        function selectLine(lineId) {
+            if (selectedLineId === lineId) {
+                // 同じ線を再クリックで選択解除
+                selectedLineId = null;
+                renderLineList();
+                fitToBounds();
+                return;
+            }
+
+            selectedLineId = lineId;
+            renderLineList();
+
+            const targetLine = parsedLines.find(l => l.id === lineId);
+            if (targetLine) {
+                fitToBounds(targetLine.bounds);
+            }
+        }
+
+        // マップのビューを指定したバウンディングボックスに合わせる
+        function fitToBounds(customBounds = null) {
+            const targetBounds = customBounds || bounds;
+            if (targetBounds.minLon === Infinity) return;
+
+            const padding = 60; // px
+            const width = canvas.width - padding * 2;
+            const height = canvas.height - padding * 2;
+
+            const lonDiff = targetBounds.maxLon - targetBounds.minLon || 0.001;
+            const latDiff = targetBounds.maxLat - targetBounds.minLat || 0.001;
+
+            const scaleX = width / lonDiff;
+            const scaleY = height / latDiff;
+            const baseScale = Math.min(scaleX, scaleY);
+
+            transform.scale = baseScale;
+
+            const centerLon = (targetBounds.minLon + targetBounds.maxLon) / 2;
+            const centerLat = (targetBounds.minLat + targetBounds.maxLat) / 2;
+
+            transform.offsetX = canvas.width / 2 - centerLon * transform.scale;
+            transform.offsetY = canvas.height / 2 + centerLat * transform.scale;
+
+            drawMap();
+        }
+
+        // 経度・緯度 -> Canvas座標変換
+        function toCanvasCoords(lon, lat) {
+            const x = lon * transform.scale + transform.offsetX;
+            const y = -lat * transform.scale + transform.offsetY;
+            return { x, y };
+        }
+
+        // Canvas描画関数
+        function drawMap() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            if (parsedLines.length === 0) return;
+
+            // 1. 非選択の線を先に描画
+            parsedLines.forEach(line => {
+                if (line.id === selectedLineId) return; // 選択中の線は後で強調描画
+
+                if (line.points.length < 2) return;
+
+                ctx.lineWidth = 1.5;
+                ctx.strokeStyle = selectedLineId ? '#475569' : '#818cf8'; // 選択中があれば他はグレーアウト
+
+                ctx.beginPath();
+                const start = toCanvasCoords(line.points[0].lon, line.points[0].lat);
+                ctx.moveTo(start.x, start.y);
+
+                for (let i = 1; i < line.points.length; i++) {
+                    const pt = toCanvasCoords(line.points[i].lon, line.points[i].lat);
+                    ctx.lineTo(pt.x, pt.y);
+                }
+                ctx.stroke();
+            });
+
+            // 2. 非選択の線のポイントを描画
+            const normalPointRadius = Math.max(1.2, Math.min(3, transform.scale * 0.0004));
+
+            parsedLines.forEach(line => {
+                if (line.id === selectedLineId) return;
+
+                ctx.fillStyle = selectedLineId ? '#64748b' : '#f43f5e';
+                line.points.forEach(pt => {
+                    const pos = toCanvasCoords(pt.lon, pt.lat);
+                    if (pos.x >= -10 && pos.x <= canvas.width + 10 && pos.y >= -10 && pos.y <= canvas.height + 10) {
+                        ctx.beginPath();
+                        ctx.arc(pos.x, pos.y, normalPointRadius, 0, Math.PI * 2);
+                        ctx.fill();
+                    }
+                });
+            });
+
+            // 3. 選択中の線・ポイントを最前面に強調描画
+            if (selectedLineId !== null) {
+                const targetLine = parsedLines.find(l => l.id === selectedLineId);
+                if (targetLine && targetLine.points.length >= 2) {
+                    // ラインの強調
+                    ctx.lineWidth = 4;
+                    ctx.strokeStyle = '#f59e0b'; // amber-500
+
+                    ctx.beginPath();
+                    const start = toCanvasCoords(targetLine.points[0].lon, targetLine.points[0].lat);
+                    ctx.moveTo(start.x, start.y);
+
+                    for (let i = 1; i < targetLine.points.length; i++) {
+                        const pt = toCanvasCoords(targetLine.points[i].lon, targetLine.points[i].lat);
+                        ctx.lineTo(pt.x, pt.y);
+                    }
+                    ctx.stroke();
+
+                    // ポイントの強調
+                    const highlightRadius = Math.max(3, Math.min(6, transform.scale * 0.0008));
+                    ctx.fillStyle = '#facc15'; // yellow-400
+                    ctx.strokeStyle = '#78350f';
+                    ctx.lineWidth = 1;
+
+                    targetLine.points.forEach(pt => {
+                        const pos = toCanvasCoords(pt.lon, pt.lat);
+                        if (pos.x >= -10 && pos.x <= canvas.width + 10 && pos.y >= -10 && pos.y <= canvas.height + 10) {
+                            ctx.beginPath();
+                            ctx.arc(pos.x, pos.y, highlightRadius, 0, Math.PI * 2);
+                            ctx.fill();
+                            ctx.stroke();
+                        }
+                    });
+                }
+            }
+        }
+
+        // Canvasのドラッグ・パン機能
+        canvas.addEventListener('mousedown', (e) => {
+            isDragging = true;
+            dragStart = { x: e.clientX - transform.offsetX, y: e.clientY - transform.offsetY };
+        });
+
+        window.addEventListener('mousemove', (e) => {
+            if (!isDragging) return;
+            transform.offsetX = e.clientX - dragStart.x;
+            transform.offsetY = e.clientY - dragStart.y;
+            drawMap();
+        });
+
+        window.addEventListener('mouseup', () => {
+            isDragging = false;
+        });
+
+        // ズーム（ホイール操作）
+        canvas.addEventListener('wheel', (e) => {
+            e.preventDefault();
+
+            const zoomFactor = e.deltaY < 0 ? 1.15 : 0.85;
+
+            const mouseX = e.clientX - canvas.getBoundingClientRect().left;
+            const mouseY = e.clientY - canvas.getBoundingClientRect().top;
+
+            transform.offsetX = mouseX - (mouseX - transform.offsetX) * zoomFactor;
+            transform.offsetY = mouseY - (mouseY - transform.offsetY) * zoomFactor;
+            transform.scale *= zoomFactor;
+
+            drawMap();
+        }, { passive: false });
+
+        // リセットボタン
+        resetViewBtn.addEventListener('click', () => {
+            selectedLineId = null;
+            renderLineList();
+            fitToBounds();
+        });
+    </script>
+</body>
+</html>
