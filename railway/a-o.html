@@ -8,6 +8,37 @@
   <link rel="stylesheet" href="/reference/railway/index.css">
   <link rel="stylesheet" href="/reference/sitebutton.css">
   <title>会社別目次 (A-O)</title>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+  const sortSelect = document.getElementById('sort-select');
+  const container = document.getElementById('card-container');
+
+  if (!sortSelect || !container) return;
+
+  sortSelect.addEventListener('change', (e) => {
+    const value = e.target.value;
+    const cards = Array.from(container.getElementsByClassName('item-card'));
+
+    cards.sort((a, b) => {
+      if (value === 'id-asc') {
+        // 作品番号：低い順（昇順）
+        const idA = parseInt(a.getAttribute('data-id'), 10);
+        const idB = parseInt(b.getAttribute('data-id'), 10);
+        return idA - idB;
+      } else if (value === 'score-desc') {
+        // スコア：高い順（降順）
+        const scoreA = parseFloat(a.getAttribute('data-score')) || 0;
+        const scoreB = parseFloat(b.getAttribute('data-score')) || 0;
+        return scoreB - scoreA; // 高い方が前へ
+      }
+      return 0;
+    });
+
+    // 並び替えた順番通りにDOMを再配置
+    cards.forEach(card => container.appendChild(card));
+  });
+});
+  </script>
 </head>
 <body>
 
