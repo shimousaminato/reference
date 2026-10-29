@@ -86,6 +86,7 @@
                 <div class="flex justify-between items-center border-b border-slate-700 pb-2">
                     <h2 class="text-sm font-semibold text-slate-300">
                         <i class="fa-solid fa-code mr-2 text-indigo-400"></i>HTML出力結果
+                        <span class="text-[10px] text-slate-400 font-normal ml-1">（選択路線の合計）</span>
                     </h2>
                     <button id="copyBtn" class="text-xs bg-indigo-600 hover:bg-indigo-500 text-white px-2.5 py-1 rounded transition-all flex items-center gap-1 shadow">
                         <i class="fa-solid fa-copy"></i> コピー
@@ -95,12 +96,16 @@
             </div>
 
             <!-- 各線の内訳リストパネル -->
-            <div class="bg-slate-800 rounded-xl p-5 border border-slate-700 shadow-lg flex-1 flex flex-col min-h-[250px] max-h-[350px]">
+            <div class="bg-slate-800 rounded-xl p-5 border border-slate-700 shadow-lg flex-1 flex flex-col min-h-[250px] max-h-[380px]">
                 <div class="flex justify-between items-center mb-3 border-b border-slate-700 pb-2">
                     <h2 class="text-sm font-semibold text-slate-300">
-                        <i class="fa-solid fa-list-ol mr-2 text-indigo-400"></i>線ごとのポイント数一覧
+                        <i class="fa-solid fa-list-check mr-2 text-indigo-400"></i>対象路線の選択
                     </h2>
-                    <span id="lineListBadge" class="text-[10px] bg-indigo-900/60 text-indigo-300 px-2 py-0.5 rounded-full border border-indigo-700/50">0 件</span>
+                    <div class="flex items-center space-x-2">
+                        <button id="selectAllBtn" class="text-[10px] bg-slate-700 hover:bg-slate-600 text-slate-200 px-2 py-0.5 rounded transition-all">全選択</button>
+                        <button id="deselectAllBtn" class="text-[10px] bg-slate-700 hover:bg-slate-600 text-slate-200 px-2 py-0.5 rounded transition-all">全解除</button>
+                        <span id="lineListBadge" class="text-[10px] bg-indigo-900/60 text-indigo-300 px-2 py-0.5 rounded-full border border-indigo-700/50">0 件</span>
+                    </div>
                 </div>
                 
                 <!-- リスト本体（スクロール可） -->
@@ -170,6 +175,8 @@
         const resetViewBtn = document.getElementById('resetViewBtn');
         const lineListEl = document.getElementById('lineList');
         const lineListBadgeEl = document.getElementById('lineListBadge');
+        const selectAllBtn = document.getElementById('selectAllBtn');
+        const deselectAllBtn = document.getElementById('deselectAllBtn');
         const canvas = document.getElementById('mapCanvas');
         const ctx = canvas.getContext('2d');
         const canvasContainer = document.getElementById('canvasContainer');
@@ -178,7 +185,7 @@
         // データ＆ビュー変数
         let currentFileName = '';
         let parsedLines = []; // [{ id: number, name: string, points: [{lon, lat}, ...], bounds: {} }]
-        let selectedLineId = null; // 選択・ハイライトされた線のID
+        let selectedLineIds = new Set(); // 選択（チェック）された線のID集合
         let allPointsCount = 0;
         let bounds = { minLon: Infinity, maxLon: -Infinity, minLat: Infinity, maxLat: -Infinity };
         
@@ -272,7 +279,7 @@
             const xmlDoc = parser.parseFromString(xmlString, "text/xml");
 
             parsedLines = [];
-            selectedLineId = null;
+            selectedLineIds.clear();
             allPointsCount = 0;
             bounds = { minLon: Infinity, maxLon: -Infinity, minLat: Infinity, maxLat: -Infinity };
 
@@ -330,6 +337,7 @@
                             points: linePoints,
                             bounds: lineBounds
                         });
+                        selectedLineIds.add(lineIdCounter); // 初期状態では全選択
                         allPointsCount += linePoints.length;
                     }
                 }
@@ -375,6 +383,7 @@
                             points: linePoints,
                             bounds: lineBounds
                         });
+                        selectedLineIds.add(lineIdCounter);
                         allPointsCount += linePoints.length;
                     }
                 }
@@ -387,11 +396,11 @@
                 ? (allPointsCount / parsedLines.length).toFixed(1) 
                 : '0';
 
-            // textareaへHTMLテンプレート出力
-            updateTextareaOutput();
-
             // リストの生成
             renderLineList();
+
+            // textareaへHTMLテンプレート出力（選択中の合計）
+            updateTextareaOutput();
 
             if (allPointsCount > 0) {
                 emptyState.style.display = 'none';
@@ -402,17 +411,29 @@
             }
         }
 
+        // 選択された路線の合計スコアを算出
+        function getSelectedScore() {
+            let sum = 0;
+            parsedLines.forEach(line => {
+                if (selectedLineIds.has(line.id)) {
+                    sum += line.points.length;
+                }
+            });
+            return sum;
+        }
+
         // テキストエリアへのHTML出力生成関数
         function updateTextareaOutput() {
             // 拡張子（.kml等）を除去したファイル名を取得
             const fileNameWithoutExt = currentFileName.replace(/\.[^/.]+$/, "");
+            const score = getSelectedScore();
 
             // 改行はそのままに、各行前後のスペースを削除したHTML文字列を作成
-            const htmlTemplate = `<details class="item-card" data-id="${fileNameWithoutExt}" data-score="${allPointsCount}">
+            const htmlTemplate = `<details class="item-card" data-id="${fileNameWithoutExt}" data-score="${score}">
 <summary>
 <div class="card-header-info">
 <span class="card-id-label">ID: ${fileNameWithoutExt}</span>
-<span class="card-score-badge">スコア: <span class="score">${allPointsCount}</span></span>
+<span class="card-score-badge">スコア: <span class="score">${score}</span></span>
 </div>
 <a class="rB railway-link" href="#">作成者</a>
 </summary>
@@ -435,10 +456,25 @@
             showToast('HTMLコードをクリップボードにコピーしました！');
         });
 
+        // 全選択・全解除ボタンのイベント
+        selectAllBtn.addEventListener('click', () => {
+            parsedLines.forEach(l => selectedLineIds.add(l.id));
+            renderLineList();
+            updateTextareaOutput();
+            drawMap();
+        });
+
+        deselectAllBtn.addEventListener('click', () => {
+            selectedLineIds.clear();
+            renderLineList();
+            updateTextareaOutput();
+            drawMap();
+        });
+
         // 個別の線一覧リストを描画
         function renderLineList() {
             lineListEl.innerHTML = '';
-            lineListBadgeEl.textContent = `${parsedLines.length} 件`;
+            lineListBadgeEl.textContent = `${selectedLineIds.size} / ${parsedLines.length} 件`;
 
             if (parsedLines.length === 0) {
                 lineListEl.innerHTML = `<p class="text-xs text-slate-500 text-center py-8">KMLファイルを読み込むと<br>ここに各線の内訳が表示されます</p>`;
@@ -446,51 +482,48 @@
             }
 
             parsedLines.forEach(line => {
-                const item = document.createElement('div');
-                const isSelected = selectedLineId === line.id;
+                const item = document.createElement('label');
+                const isSelected = selectedLineIds.has(line.id);
 
-                item.className = `p-2.5 rounded-lg border text-xs cursor-pointer transition-all flex justify-between items-center ${
+                item.className = `p-2.5 rounded-lg border text-xs cursor-pointer transition-all flex justify-between items-center select-none ${
                     isSelected 
                         ? 'bg-indigo-900/80 border-indigo-500 text-white shadow' 
-                        : 'bg-slate-900/50 border-slate-700/70 text-slate-300 hover:bg-slate-700/60 hover:border-slate-600'
+                        : 'bg-slate-900/50 border-slate-700/70 text-slate-400 hover:bg-slate-700/60 hover:border-slate-600'
                 }`;
 
                 item.innerHTML = `
-                    <div class="flex items-center space-x-2 truncate mr-2">
-                        <i class="fa-solid fa-route ${isSelected ? 'text-amber-400' : 'text-indigo-400'}"></i>
+                    <div class="flex items-center space-x-2.5 truncate mr-2">
+                        <input type="checkbox" class="line-checkbox rounded bg-slate-800 border-slate-600 text-indigo-500 focus:ring-0 focus:ring-offset-0 cursor-pointer" ${isSelected ? 'checked' : ''}>
+                        <i class="fa-solid fa-route ${isSelected ? 'text-amber-400' : 'text-slate-500'}"></i>
                         <span class="font-medium truncate" title="${line.name}">${line.name}</span>
                     </div>
                     <div class="flex items-center space-x-1 shrink-0">
-                        <span class="font-bold ${isSelected ? 'text-amber-300' : 'text-indigo-300'}">${line.points.length.toLocaleString()}</span>
+                        <span class="font-bold ${isSelected ? 'text-amber-300' : 'text-slate-400'}">${line.points.length.toLocaleString()}</span>
                         <span class="text-[10px] text-slate-400">pt</span>
                     </div>
                 `;
 
-                item.addEventListener('click', () => {
-                    selectLine(line.id);
+                const checkbox = item.querySelector('.line-checkbox');
+                checkbox.addEventListener('change', (e) => {
+                    e.stopPropagation();
+                    toggleLineSelection(line.id, checkbox.checked);
                 });
 
                 lineListEl.appendChild(item);
             });
         }
 
-        // 特定の線を選択してフォーカス・ズーム
-        function selectLine(lineId) {
-            if (selectedLineId === lineId) {
-                // 同じ線を再クリックで選択解除
-                selectedLineId = null;
-                renderLineList();
-                fitToBounds();
-                return;
+        // 特定の線の選択・非選択をトグル
+        function toggleLineSelection(lineId, isChecked) {
+            if (isChecked) {
+                selectedLineIds.add(lineId);
+            } else {
+                selectedLineIds.delete(lineId);
             }
 
-            selectedLineId = lineId;
             renderLineList();
-
-            const targetLine = parsedLines.find(l => l.id === lineId);
-            if (targetLine) {
-                fitToBounds(targetLine.bounds);
-            }
+            updateTextareaOutput();
+            drawMap();
         }
 
         // マップのビューを指定したバウンディングボックスに合わせる
@@ -533,14 +566,15 @@
 
             if (parsedLines.length === 0) return;
 
-            // 1. 非選択の線を先に描画
-            parsedLines.forEach(line => {
-                if (line.id === selectedLineId) return; // 選択中の線は後で強調描画
+            const hasSelection = selectedLineIds.size > 0;
 
+            // 1. 未選択の線を背景に描画
+            parsedLines.forEach(line => {
+                if (selectedLineIds.has(line.id)) return;
                 if (line.points.length < 2) return;
 
                 ctx.lineWidth = 1.5;
-                ctx.strokeStyle = selectedLineId ? '#475569' : '#818cf8'; // 選択中があれば他はグレーアウト
+                ctx.strokeStyle = hasSelection ? '#334155' : '#818cf8';
 
                 ctx.beginPath();
                 const start = toCanvasCoords(line.points[0].lon, line.points[0].lat);
@@ -553,13 +587,13 @@
                 ctx.stroke();
             });
 
-            // 2. 非選択の線のポイントを描画
+            // 2. 未選択の線のポイントを描画
             const normalPointRadius = Math.max(1.2, Math.min(3, transform.scale * 0.0004));
 
             parsedLines.forEach(line => {
-                if (line.id === selectedLineId) return;
+                if (selectedLineIds.has(line.id)) return;
 
-                ctx.fillStyle = selectedLineId ? '#64748b' : '#f43f5e';
+                ctx.fillStyle = hasSelection ? '#475569' : '#f43f5e';
                 line.points.forEach(pt => {
                     const pos = toCanvasCoords(pt.lon, pt.lat);
                     if (pos.x >= -10 && pos.x <= canvas.width + 10 && pos.y >= -10 && pos.y <= canvas.height + 10) {
@@ -570,41 +604,40 @@
                 });
             });
 
-            // 3. 選択中の線・ポイントを最前面に強調描画
-            if (selectedLineId !== null) {
-                const targetLine = parsedLines.find(l => l.id === selectedLineId);
-                if (targetLine && targetLine.points.length >= 2) {
-                    // ラインの強調
-                    ctx.lineWidth = 4;
-                    ctx.strokeStyle = '#f59e0b'; // amber-500
+            // 3. 選択中の線を強調描画
+            parsedLines.forEach(line => {
+                if (!selectedLineIds.has(line.id)) return;
+                if (line.points.length < 2) return;
 
-                    ctx.beginPath();
-                    const start = toCanvasCoords(targetLine.points[0].lon, targetLine.points[0].lat);
-                    ctx.moveTo(start.x, start.y);
+                ctx.lineWidth = 3.5;
+                ctx.strokeStyle = '#f59e0b'; // amber-500
 
-                    for (let i = 1; i < targetLine.points.length; i++) {
-                        const pt = toCanvasCoords(targetLine.points[i].lon, targetLine.points[i].lat);
-                        ctx.lineTo(pt.x, pt.y);
-                    }
-                    ctx.stroke();
+                ctx.beginPath();
+                const start = toCanvasCoords(line.points[0].lon, line.points[0].lat);
+                ctx.moveTo(start.x, start.y);
 
-                    // ポイントの強調
-                    const highlightRadius = Math.max(3, Math.min(6, transform.scale * 0.0008));
-                    ctx.fillStyle = '#facc15'; // yellow-400
-                    ctx.strokeStyle = '#78350f';
-                    ctx.lineWidth = 1;
-
-                    targetLine.points.forEach(pt => {
-                        const pos = toCanvasCoords(pt.lon, pt.lat);
-                        if (pos.x >= -10 && pos.x <= canvas.width + 10 && pos.y >= -10 && pos.y <= canvas.height + 10) {
-                            ctx.beginPath();
-                            ctx.arc(pos.x, pos.y, highlightRadius, 0, Math.PI * 2);
-                            ctx.fill();
-                            ctx.stroke();
-                        }
-                    });
+                for (let i = 1; i < line.points.length; i++) {
+                    const pt = toCanvasCoords(line.points[i].lon, line.points[i].lat);
+                    ctx.lineTo(pt.x, pt.y);
                 }
-            }
+                ctx.stroke();
+
+                // 選択中のポイントを強調描画
+                const highlightRadius = Math.max(2.5, Math.min(5, transform.scale * 0.0007));
+                ctx.fillStyle = '#facc15'; // yellow-400
+                ctx.strokeStyle = '#78350f';
+                ctx.lineWidth = 1;
+
+                line.points.forEach(pt => {
+                    const pos = toCanvasCoords(pt.lon, pt.lat);
+                    if (pos.x >= -10 && pos.x <= canvas.width + 10 && pos.y >= -10 && pos.y <= canvas.height + 10) {
+                        ctx.beginPath();
+                        ctx.arc(pos.x, pos.y, highlightRadius, 0, Math.PI * 2);
+                        ctx.fill();
+                        ctx.stroke();
+                    }
+                });
+            });
         }
 
         // Canvasのドラッグ・パン機能
@@ -642,8 +675,6 @@
 
         // リセットボタン
         resetViewBtn.addEventListener('click', () => {
-            selectedLineId = null;
-            renderLineList();
             fitToBounds();
         });
     </script>
