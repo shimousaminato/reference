@@ -1,5 +1,6 @@
 /* 共通設定・基本ボタン（.rB） */
 /* 項目を横並びにするグリッドコンテナ */
+/* 項目を横並びにするグリッドコンテナ */
 .card-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
@@ -13,16 +14,19 @@
   border: 1px solid #dcdcdc;
   border-radius: 6px;
   padding: 8px;
-  margin-bottom: 0; /* グリッドのgapで余白を取るため打ち消し */
+  margin-bottom: 0;
 }
 
-/* summaryのデフォルトの矢印を整える、または見栄えを調整 */
+/* summaryのデフォルト矢印を隠す・整える */
 .item-card summary {
   cursor: pointer;
-  font-weight: bold;
+  list-style: none;
+}
+.item-card summary::-webkit-details-marker {
+  display: none;
 }
 
-/* ボタン（.rB）がカード内で自然に収まるように調整 */
+/* ボタン（.rB）がカード内で綺麗に収まるように */
 .item-card .rB {
   display: inline-block;
   margin: 0;
@@ -40,6 +44,62 @@
   border-radius: 4px;
   font-size: 14px;
   color: #333333;
+}
+
+/* カード内の上部見出しエリア（IDとスコア） */
+.card-header-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 13px;
+  color: #555555;
+  margin-bottom: 6px;
+  padding: 0 2px;
+}
+
+/* 作品番号のラベル */
+.card-id-label {
+  font-family: monospace;
+  font-weight: bold;
+  color: #666666;
+}
+
+/* スコアバッジ */
+.card-score-badge {
+  background-color: #e8f4f8;
+  color: #004c99;
+  padding: 1px 6px;
+  border-radius: 4px;
+  font-weight: bold;
+  font-size: 12px;
+  border: 1px solid #d0e4ee;
+}
+
+/* 数字のみのスコア */
+.score {
+  font-weight: bold;
+}
+
+/* ソートコントロール部分 */
+.sort-controls {
+  margin: 12px 0 8px 0;
+  font-size: 14px;
+  color: #333333;
+}
+
+.sort-select {
+  padding: 4px 8px;
+  border: 1px solid #dcdcdc;
+  border-radius: 4px;
+  background-color: #ffffff;
+  font-size: 14px;
+  color: #333333;
+  cursor: pointer;
+}
+
+.sort-select:focus {
+  border-color: #0066cc;
+  outline: none;
 }
 .rB {
   background-color: #0066cc;
