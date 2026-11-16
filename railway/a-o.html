@@ -21,31 +21,31 @@
 });
 
 // ソート用関数
-function sortCards(selectElement, containerId) {
-  const value = selectElement.value;
-  const container = document.getElementById(containerId);
-  if (!container) return;
+    function sortCards(selectElement, containerId) {
+      const value = selectElement.value;
+      const container = document.getElementById(containerId);
+      if (!container) return;
 
-  const cards = Array.from(container.getElementsByClassName('item-card'));
+      const cards = Array.from(container.getElementsByClassName('item-card'));
 
-  cards.sort((a, b) => {
-    if (value === 'id-asc') {
-      // 作品番号（ID）：低い順（昇順）
-      const idA = parseInt(a.getAttribute('data-id'), 10) || 0;
-      const idB = parseInt(b.getAttribute('data-id'), 10) || 0;
-      return idA - idB;
-    } else if (value === 'score-desc') {
-      // スコア：高い順（降順）
-      const scoreA = parseFloat(a.getAttribute('data-score')) || 0;
-      const scoreB = parseFloat(b.getAttribute('data-score')) || 0;
-      return scoreB - scoreA;
+      cards.sort((a, b) => {
+        if (value === 'id-asc') {
+          // 作品番号（ID）：低い順・辞書順（昇順）※文字列や英数字混在にも対応
+          const idA = a.getAttribute('data-id') || '';
+          const idB = b.getAttribute('data-id') || '';
+          return idA.localeCompare(idB, 'ja', { numeric: true });
+        } else if (value === 'score-desc') {
+          // スコア：高い順（降順）
+          const scoreA = parseFloat(a.getAttribute('data-score')) || 0;
+          const scoreB = parseFloat(b.getAttribute('data-score')) || 0;
+          return scoreB - scoreA;
+        }
+        return 0;
+      });
+
+      // 並び替えた順にDOMを再配置
+      cards.forEach(card => container.appendChild(card));
     }
-    return 0;
-  });
-
-  // 並び替えた順にDOMを再配置
-  cards.forEach(card => container.appendChild(card));
-}
   </script>
 </head>
 <body>
