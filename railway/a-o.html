@@ -46,6 +46,14 @@
       // 並び替えた順にDOMを再配置
       cards.forEach(card => container.appendChild(card));
     }
+    // ページ読み込み時に初期ソートを自動実行する
+document.addEventListener('DOMContentLoaded', () => {
+  const selectElement = document.getElementById('sort-select-ishikawa');
+  if (selectElement) {
+    // セレクトボックスの初期値（id-ascなど）に合わせて並び替えを実行
+    sortCards(selectElement, 'container-ishikawa');
+  }
+});
   </script>
 </head>
 <body>
