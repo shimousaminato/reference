@@ -1,0 +1,180 @@
+/* =========================================
+   共通ベースCSS（テーマは下位ページ・親要素で指定）
+   ========================================= */
+
+/* 項目を横並びにするグリッドコンテナ */
+.card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 10px;
+  margin-top: 10px;
+}
+
+/* 各項目のカード・detailsデザイン */
+.item-card {
+  background-color: #f8f9fa;
+  border: 1px solid #dcdcdc;
+  border-radius: 6px;
+  padding: 8px;
+  margin-bottom: 0;
+}
+
+/* summaryのデフォルト矢印を隠す・整える */
+.item-card summary {
+  cursor: pointer;
+  list-style: none;
+}
+.item-card summary::-webkit-details-marker {
+  display: none;
+}
+
+/* ボタン（.rB）がカード内で綺麗に収まるように */
+.item-card .rB {
+  display: inline-block;
+  margin: 0;
+  width: 100%;
+  box-sizing: border-box;
+  text-align: center;
+}
+
+/* 展開される詳細スペース */
+.card-detail {
+  margin-top: 8px;
+  padding: 8px;
+  background-color: #ffffff;
+  border: 1px solid #e0e0e0;
+  border-radius: 4px;
+  font-size: 14px;
+  color: #333333;
+}
+
+/* カード内の上部見出しエリア（IDとスコア） */
+.card-header-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 13px;
+  color: #555555;
+  margin-bottom: 6px;
+  padding: 0 2px;
+}
+
+/* 作品番号のラベル */
+.card-id-label {
+  font-family: monospace;
+  font-weight: bold;
+  color: #666666;
+}
+
+/* スコアバッジ */
+.card-score-badge {
+  --badge-color: var(--theme-color, #0066cc);
+  background-color: color-mix(in srgb, var(--badge-color) 12%, #ffffff);
+  color: color-mix(in srgb, var(--badge-color) 75%, #000000);
+  padding: 1px 6px;
+  border-radius: 4px;
+  font-weight: bold;
+  font-size: 12px;
+  border: 1px solid color-mix(in srgb, var(--badge-color) 30%, #dcdcdc);
+}
+
+/* 数字のみのスコア */
+.score {
+  font-weight: bold;
+}
+
+/* ソートコントロール部分 */
+.sort-controls {
+  margin: 12px 0 8px 0;
+  font-size: 14px;
+  color: #333333;
+}
+
+.sort-select {
+  padding: 4px 8px;
+  border: 1px solid #dcdcdc;
+  border-radius: 4px;
+  background-color: #ffffff;
+  font-size: 14px;
+  color: #333333;
+  cursor: pointer;
+}
+
+.sort-select:focus {
+  border-color: var(--theme-color, #0066cc);
+  outline: none;
+}
+
+/* =========================================
+   基本ボタン（.rB）
+   個別色指定: style="--btn-color: var(--road);"
+   ========================================= */
+.rB {
+  --btn-color: var(--theme-color, #0066cc);
+  --btn-hover: color-mix(in srgb, var(--btn-color) 85%, #000000);
+  --btn-shadow: color-mix(in srgb, var(--btn-color) 75%, #000000);
+
+  background: var(--btn-color);
+  border-radius: 6px;
+  font-size: 16px;
+  color: #ffffff;
+  text-decoration: none;
+  font-weight: 700;
+  padding: 6px 12px;
+  box-shadow: 0 2px 0 0 var(--btn-shadow);
+  transition: background 0.2s ease, transform 0.1s ease, box-shadow 0.2s ease;
+  margin: 2px;
+  display: inline-block;
+  border: 1px solid var(--btn-hover);
+  width: auto;
+  line-height: 1.4;
+}
+
+.rB:hover {
+  background: var(--btn-hover);
+  color: #ffffff;
+}
+
+.rB:active {
+  transform: translateY(2px);
+  box-shadow: 0 0 0 0 var(--btn-shadow);
+}
+
+.rB::after {
+  display: inline-block;
+  height: 0;
+}
+
+/* 折りたたみ要素（details） */
+details {
+  background-color: #f4f4f4;
+  border: 1px solid #dcdcdc;
+  border-radius: 6px;
+  padding: 8px 12px;
+  margin-bottom: 8px;
+}
+
+/* 見出し（h2） */
+h2 {
+  --heading-color: var(--theme-color, #0066cc);
+  font-size: 20px;
+  padding-bottom: 4px;
+  border-bottom: 2px solid var(--heading-color);
+  margin-top: 24px;
+  margin-bottom: 12px;
+}
+
+/* 見出し（h3） */
+h3 {
+  --heading-color: var(--theme-color, #0066cc);
+  font-size: 16px;
+  padding: 6px 10px;
+  border-left: 4px solid var(--heading-color);
+  border-top: 1px solid #dcdcdc;
+  border-right: 1px solid #dcdcdc;
+  border-bottom: 1px solid #dcdcdc;
+  background-color: color-mix(in srgb, var(--heading-color) 12%, #ffffff);
+  border-radius: 2px;
+  margin-top: 16px;
+  margin-bottom: 8px;
+}
