@@ -1,41 +1,97 @@
 <head>
-    <link rel="apple-touch-icon" href="/reference/logo.png">
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" href="/reference/logo.png">
   <link rel="shortcut icon" href="/reference/logo.png">
-  <link rel="stylesheet" href="/reference/railway/index.css">
-  <link rel="stylesheet" href="/reference/sitebutton.css">
+  <link rel="stylesheet" href="/reference/railway/index2.css">
+  <link rel="stylesheet" href="/reference/index2.css">
+  <link rel="stylesheet" href="/reference/sitecolor.css">
+  <title>会社別目次 (SA-SO)</title>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      // ページ読み込み時に各カードのリンク（URL）を自動生成する
+      const cards = document.querySelectorAll('.item-card');
+      cards.forEach(card => {
+        const id = card.getAttribute('data-id');
+        const link = card.querySelector('.railway-link');
+        if (id && link) {
+          link.href = `https://ku-tetsu.net/${id}.html`;
+        }
+      });
+    });
+
+    // ソート用関数
+    function sortCards(selectElement, containerId) {
+      const value = selectElement.value;
+      const container = document.getElementById(containerId);
+      if (!container) return;
+
+      const cards = Array.from(container.getElementsByClassName('item-card'));
+
+      cards.sort((a, b) => {
+        if (value === 'id-asc') {
+          // 作品番号（ID）：低い順・辞書順（昇順）※文字列や英数字混在にも対応
+          const idA = a.getAttribute('data-id') || '';
+          const idB = b.getAttribute('data-id') || '';
+          return idA.localeCompare(idB, 'ja', { numeric: true });
+        } else if (value === 'score-desc') {
+          // スコア：高い順（降順）
+          const scoreA = parseFloat(a.getAttribute('data-score')) || 0;
+          const scoreB = parseFloat(b.getAttribute('data-score')) || 0;
+          return scoreB - scoreA;
+        }
+        return 0;
+      });
+
+      // 並び替えた順にDOMを再配置
+      cards.forEach(card => container.appendChild(card));
+    }
+
+    // ページ読み込み時に初期ソートを自動実行する
+    document.addEventListener('DOMContentLoaded', () => {
+      const selectElement = document.getElementById('sort-select-ishikawa');
+      if (selectElement) {
+        // セレクトボックスの初期値（id-ascなど）に合わせて並び替えを実行
+        sortCards(selectElement, 'container-ishikawa');
+      }
+    });
+  </script>
 </head>
-<p><a href="#" onclick="window.history.back(); return false;">前のページに戻る</a></p>
-<details><summry>会社別目次</summry>
-<p><a class="rB" href="#1_Saitamakosokutetsudo">埼玉高速鉄道</a></p>
-<p><a class="rB" href="#1_Saitamashintoshikotsu">埼玉新都市交通</a></p>
-<p><a class="rB" href="#1_Sagamitetsudo">相模鉄道</a></p>
-<p><a class="rB" href="#1_Sapporoshikotsukyoku">札幌市交通局</a></p>
-<p><a class="rB" href="#1_Sangitetsudo">三岐鉄道</a></p>
-<p><a class="rB" href="#1_Sanyodenkitetsudo">山陽電気鉄道</a></p>
-<p><a class="rB" href="#1_Shigarakikogentetsudo">信楽高原鐡道</a></p>
-<p><a class="rB" href="#1_Shizuokatetsudo">静岡鉄道</a></p>
-<p><a class="rB" href="#1_Shinanotetsudo">しなの鉄道</a></p>
-<p><a class="rB" href="#1_Shibayamatetsudo">芝山鉄道</a></p>
-<p><a class="rB" href="#1_Shimodaropeway">下田ロープウェイ</a></p>
-<p><a class="rB" href="#1_Shimonosekicity">下関市</a></p>
-<p><a class="rB" href="#1_Shosenkyoropeway">昇仙峡ロープウェイ</a></p>
-<p><a class="rB" href="#1_Shonanmonorail">湘南モノレール</a></p>
-<p><a class="rB" href="#1_JRFreight">JR貨物</a></p>
-<p><a class="rB" href="#1_JRKyusyu">JR九州</a></p>
-<p><a class="rB" href="#1_JRShikoku">JR四国</a></p>
-<p><a class="rB" href="#1_JRTokai">JR東海</a></p>
-<p><a class="rB" href="#1_JRTokaikotsujigyo">JR東海交通事業</a></p>
-<p><a class="rB" href="#1_JRWest">JR西日本</a></p>
-<p><a class="rB" href="#1_JREast">JR東日本</a></p>
-<p><a class="rB" href="#1_JRHokkaido">JR北海道</a></p>
-<p><a class="rB" href="#1_Jukkokutoge">十国峠</a></p>
-<p><a class="rB" href="#1_Jomodentetsu">上毛電鉄</a></p>
-<p><a class="rB" href="#1_Skyshattle">スカイシャトル</a></p>
-<p><a class="rB" href="#1_Seibutetsudo">西武鉄道</a></p>
-<p><a href="#1_Sendaikukotetsudo class=">仙台空港鉄道</a></p>
-<p><a class="rB" href="#1_Sendaishikotsukyoku">仙台市交通局</a></p>
-<p><a class="rB" href="#1_Senyokogyo">泉陽興業(YOKOHAMA AIR CABIN)</a></p>
-</details>
+<body>
+  <p><a href="https://shimousaminato.github.io/reference/index.html" class="rB">前のページに戻る</a></p>
+  <details>
+    <summary>会社別目次</summary>
+    <div class="menu-grid">
+      <a class="rB" href="#1_Saitamakosokutetsudo">埼玉高速鉄道</a>
+      <a class="rB" href="#1_Saitamashintoshikotsu">埼玉新都市交通</a>
+      <a class="rB" href="#1_Sagamitetsudo">相模鉄道</a>
+      <a class="rB" href="#1_Sapporoshikotsukyoku">札幌市交通局</a>
+      <a class="rB" href="#1_Sangitetsudo">三岐鉄道</a>
+      <a class="rB" href="#1_Sanyodenkitetsudo">山陽電気鉄道</a>
+      <a class="rB" href="#1_Shigarakikogentetsudo">信楽高原鐡道</a>
+      <a class="rB" href="#1_Shizuokatetsudo">静岡鉄道</a>
+      <a class="rB" href="#1_Shinanotetsudo">しなの鉄道</a>
+      <a class="rB" href="#1_Shibayamatetsudo">芝山鉄道</a>
+      <a class="rB" href="#1_Shimodaropeway">下田ロープウェイ</a>
+      <a class="rB" href="#1_Shimonosekicity">下関市</a>
+      <a class="rB" href="#1_Shosenkyoropeway">昇仙峡ロープウェイ</a>
+      <a class="rB" href="#1_Shonanmonorail">湘南モノレール</a>
+      <a class="rB" href="#1_JRFreight">JR貨物</a>
+      <a class="rB" href="#1_JRKyusyu">JR九州</a>
+      <a class="rB" href="#1_JRShikoku">JR四国</a>
+      <a class="rB" href="#1_JRTokai">JR東海</a>
+      <a class="rB" href="#1_JRTokaikotsujigyo">JR東海交通事業</a>
+      <a class="rB" href="#1_JRWest">JR西日本</a>
+      <a class="rB" href="#1_JREast">JR東日本</a>
+      <a class="rB" href="#1_JRHokkaido">JR北海道</a>
+      <a class="rB" href="#1_Jukkokutoge">十国峠</a>
+      <a class="rB" href="#1_Jomodentetsu">上毛電鉄</a>
+      <a class="rB" href="#1_Skyshattle">スカイシャトル</a>
+      <a class="rB" href="#1_Seibutetsudo">西武鉄道</a>
+      <a class="rB" href="#1_Sendaikukotetsudo">仙台空港鉄道</a>
+      <a class="rB" href="#1_Sendaishikotsukyoku">仙台市交通局</a>
+      <a class="rB" href="#1_Senyokogyo">泉陽興業(YOKOHAMA AIR CABIN)</a>
+    </div>
+  </details>
 <a id="1_Saitamakosokutetsudo"></a>
 <h2>埼玉高速鉄道</h2>
 <h3>埼玉高速鉄道線(埼玉スタジアム線)</h3>
