@@ -1,4 +1,4 @@
 /* 例：下位ページ側（railway用） */
-.siteop {
+:root{
   --theme-color: var(--railway);
 }
